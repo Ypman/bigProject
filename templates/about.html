@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>About</h1>
+    <!-- url_for muss auf die definierte route von flask zeigen nicht auf die html! -->
+    Back to <a href="{{ url_for('home') }}">Home</a>
+    <br>
+    <br>
+    {% for i in ing %}
+        <p>{{ i }}</p>
+    {% endfor %}
+{% endblock content %}

@@ -18,12 +18,16 @@ class ISO(Base):
     v3 = Column(Integer, nullable=False)
     prov = Column(Integer)
     src = Column(Integer)
-    country = Column(String(2), nullable=False)
-    iso2 = Column(String(20))
-    iso3 = Column(String(20))
+    country = Column(String(50), nullable=False)
+    iso2 = Column(String(2))
+    iso3 = Column(String(3))
     timestamp = Column(DateTime, default=datetime.datetime.utcnow)
 
 
 engine = create_engine('sqlite:///sqlalchemy_test.db')
 
 Base.metadata.create_all(engine)
+
+
+def get_color_values(source_id):
+    raise NotImplemented

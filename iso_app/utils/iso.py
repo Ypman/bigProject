@@ -1,10 +1,10 @@
 # iso.py
 
-from iso_app.main import db
+from iso_app import db
 
 
 class ISO(db.Model):
-    __tablename__ = 'iso'
+    # __tablename__ = 'iso'
     hakuna = db.Column(db.Integer, primary_key=True, nullable=False)
     matata = db.Column(db.Integer, primary_key=True, nullable=False)
     v1 = db.Column(db.Integer)
@@ -12,3 +12,6 @@ class ISO(db.Model):
     v3 = db.Column(db.Integer)
     src = db.Column(db.Integer)
     iso2 = db.Column(db.String(2))
+
+    def __repr__(self):
+        return 'v1={}, v2={}, v3={}'.format(self.v1, self.v2, self.v3)

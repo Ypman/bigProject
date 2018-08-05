@@ -15,9 +15,6 @@ def home():
 
 @app.route("/get", methods=['GET'])
 def get():
-    # if request.method == "GET":
-    #     url = request.form['url']
-    # return {'DK': 'id', 'desc': 'test'}
     data = {'DK': 'id', 'desc': 'test'}
     response = app.response_class(
         response=json.dumps(data),
@@ -37,26 +34,10 @@ def about():
 def get_source(value):
     # return "Hello {}!".format(name)
     print(value)
-    data = db_parser.get_color_values(int(value))
+    data = db_parser.get_all(int(value))
     response = app.response_class(
         response=json.dumps(data),
         status=200,
         mimetype='application/json'
     )
     return response
-
-
-@app.route('/desc', methods=['GET'])
-def get_desc():
-    data = {}
-    response = app.response_class(
-        response=json.dumps(data),
-        status=200,
-        mimetype='application/json'
-    )
-    return response
-
-
-# for i in ISO.query.filter_by(iso2='DE').all():
-#     # print(i.get_iso2_dict())
-#     print(i.__dict__)

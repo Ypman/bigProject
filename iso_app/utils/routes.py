@@ -4,7 +4,7 @@ import json
 from flask import render_template, url_for, flash, redirect
 from iso_app import app
 from iso_app.utils.iso import ISO
-from iso_app.utils import db
+from iso_app.utils import db_parser
 
 
 @app.route("/")
@@ -37,7 +37,7 @@ def about():
 def get_source(value):
     # return "Hello {}!".format(name)
     print(value)
-    data = db.get_color_values(int(value))
+    data = db_parser.get_color_values(int(value))
     response = app.response_class(
         response=json.dumps(data),
         status=200,
@@ -48,7 +48,6 @@ def get_source(value):
 
 @app.route('/desc', methods=['GET'])
 def get_desc():
-    # data = db.get_description()
     data = {}
     response = app.response_class(
         response=json.dumps(data),
@@ -58,5 +57,6 @@ def get_desc():
     return response
 
 
-iso = ISO.query.filter_by(iso2='DE').first()
-print(iso)
+# for i in ISO.query.filter_by(iso2='DE').all():
+#     # print(i.get_iso2_dict())
+#     print(i.__dict__)

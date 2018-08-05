@@ -37,14 +37,26 @@ def about():
 
 
 @app.route('/source/<value>', methods=['GET'])
-def hello_name(value):
+def get_source(value):
     # return "Hello {}!".format(name)
-    data = utils.db.get_color_values(value)
+    print(value)
+    data = utils.db.get_color_values(int(value))
     response = app.response_class(
-            response=json.dumps(data),
-            status=200,
-            mimetype='application/json'
-        )
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
+@app.route('/desc', methods=['GET'])
+def get_desc():
+    data = utils.db.get_description()
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
     return response
 
 

@@ -54,6 +54,9 @@ def get_color_values(source_id: int):
             result_dict.append(u.__dict__)
 
     new_dict = {}
+    """
+    for a new v(n) just copy&paste a elif statement and exchange for example 'v3' with 'v4'
+    """
     for f in result_dict:
         if f['iso2'] not in new_dict:
             new_dict[f['iso2']] = {'v1': f['v1'], 'v2': f['v2'], 'v3': f['v3']}
@@ -72,4 +75,4 @@ def get_description():
     raise NotImplemented
 
 
-print(get_color_values(95))
+print(get_color_values(999))

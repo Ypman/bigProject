@@ -45,13 +45,10 @@ session = Session()
 
 
 def get_color_values(source_id: int):
-    result_dict = []
     if source_id == 999:
-        for u in session.query(ISO).all():
-            result_dict.append(u.__dict__)
+        result_dict = get_db_dict(source_id)
     else:
-        for u in session.query(ISO).filter_by(src=source_id).all():
-            result_dict.append(u.__dict__)
+        result_dict = get_db_dict(source_id, False)
 
     new_dict = {}
     """
@@ -71,8 +68,20 @@ def get_color_values(source_id: int):
     return new_dict
 
 
+def get_db_dict(source_id, all_entrys=True):
+    result_dict = []
+    if all_entrys:
+        for u in session.query(ISO).all():
+            result_dict.append(u.__dict__)
+    else:
+        for u in session.query(ISO).filter_by(src=source_id).all():
+            result_dict.append(u.__dict__)
+    return result_dict
+
+
 def get_description():
-    raise NotImplemented
+    source_id = 999
+    result_dict = get_db_dict(source_id)
 
 
 print(get_color_values(999))

@@ -5,7 +5,7 @@ from iso_app.utils import db_parser
 
 def create_button_list():
     """
-    Create a beautiful button list and src list for jinja2 (Who need requests?)
+    Create a beautiful button list and src list for jinja2 (Who needs requests?)
     :return: dictionary with all information
     """
     button_dict = {}

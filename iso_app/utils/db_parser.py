@@ -3,89 +3,103 @@
 from iso_app.utils.iso import ISO
 
 
-def get_all(source_id: int):
+def get_all(source_id):
+    result_list = []
+    iso_counter = []
     if source_id == 999:
-        result_dict = get_db_dict(source_id)
+        for i in get_iso(source_id):
+            if i.iso2 not in iso_counter:
+                result_list.append({'id': i.iso2,
+                                    'color': color_picker(xor(i.iso2)),
+                                    'description': str(create_desc(i.iso2))
+                                    })
+                iso_counter.append(i.iso2)
     else:
-        result_dict = get_db_dict(source_id, False)
+        for i in get_iso(source_id, False):
+            if i.iso2 not in iso_counter:
+                result_list.append({'id': i.iso2,
+                                    'color': color_picker(xor(i.iso2, source_id)),
+                                    'description': str(create_desc(i.iso2))
+                                    })
+                iso_counter.append(i.iso2)
 
-    """
-    for a new v(n) just copy&paste a elif statement and exchange for example 'v3' with 'v4'
-    """
-    new_dict = xored_values(result_dict)
-    color_dict = color_picker(new_dict)
+        for entry in get_iso(999):
+            if entry.iso2 not in iso_counter:
+                # print(entry.iso2, 'blubb')
+                result_list.append({'id': entry.iso2,
+                                    'color': '#555555',
+                                    'description': str(create_desc(entry.iso2))
+                                    })
+                iso_counter.append(entry.iso2)
 
-    desc_dict = get_desc(get_db_dict(999))
-
-    complete_dict = []
-    for i in desc_dict:
-        if i not in color_dict:
-            temp_dict = {'id': i, 'color': '#555555', 'description': desc_dict[i]}
-        else:
-            temp_dict = {'id': i, 'color': color_dict[i], 'description': desc_dict[i]}
-        complete_dict.append(temp_dict)
-
-    return complete_dict
+    return result_list
 
 
-def color_picker(new_dict):
+def get_iso(source_id, all=True):
+    if all:
+        return ISO.query.all()
+    else:
+        return ISO.query.filter_by(src=source_id).all()
+
+
+def get_attributes(attribute, iso=None):
+    attribute_list = []
+    if iso is None:
+        for l in ISO.query.all():
+            temp_dict = l.__dict__
+            if temp_dict[attribute] not in attribute_list:
+                attribute_list.append(temp_dict[attribute])
+    else:
+        for l in ISO.query.filter_by(iso2=iso).all():
+            temp_dict = l.__dict__
+            if temp_dict[attribute] not in attribute_list:
+                attribute_list.append(temp_dict[attribute])
+    return attribute_list
+
+
+def color_picker(value_dict):
     color_helper_dict = {
         'v1': {0: '55', 1: '99'},
         'v2': {0: '55', 1: '99'},
         'v3': {0: '55', 1: '99'}
     }
-    spam = {}
-    for dd in new_dict:
-        spam[dd] = '#{}{}{}'.format(
-            color_helper_dict['v1'][new_dict[dd]['v1']],
-            color_helper_dict['v2'][new_dict[dd]['v2']],
-            color_helper_dict['v3'][new_dict[dd]['v3']])
-
-    return spam
+    return '#{}{}{}'.format(color_helper_dict['v1'][value_dict['v1']],
+                            color_helper_dict['v2'][value_dict['v2']],
+                            color_helper_dict['v3'][value_dict['v3']])
 
 
-def xored_values(result_dict):
-    new_dict = {}
-    for f in result_dict:
-        if f['iso2'] not in new_dict:
-            new_dict[f['iso2']] = {'v1': f['v1'], 'v2': f['v2'], 'v3': f['v3']}
-        if f['v1'] > new_dict[f['iso2']]['v1']:
-            new_dict[f['iso2']]['v1'] = f['v1']
-        elif f['v2'] > new_dict[f['iso2']]['v2']:
-            new_dict[f['iso2']]['v2'] = f['v2']
-        elif f['v3'] > new_dict[f['iso2']]['v3']:
-            new_dict[f['iso2']]['v3'] = f['v3']
-    return new_dict
-
-
-def get_desc(result_dict):
-    new_dict = {}
-    for f in result_dict:
-        if f['iso2'] not in new_dict:
-            new_dict[f['iso2']] = {'hakuna': [f['hakuna']],
-                                   'matata': [f['matata']],
-                                   'province': [f['province']],
-                                   'src': [f['src']]
-                                   }
-        else:
-            if f['hakuna'] not in new_dict[f['iso2']]['hakuna']:
-                new_dict[f['iso2']]['hakuna'].append(f['hakuna'])
-            if f['matata'] not in new_dict[f['iso2']]['matata']:
-                new_dict[f['iso2']]['matata'].append(f['matata'])
-            if f['province'] not in new_dict[f['iso2']]['province']:
-                new_dict[f['iso2']]['province'].append(f['province'])
-            if f['src'] not in new_dict[f['iso2']]['src']:
-                new_dict[f['iso2']]['src'].append(f['src'])
-
-    return new_dict
-
-
-def get_db_dict(source_id, all_entrys=True):
-    result_dict = []
-    if all_entrys:
-        for u in ISO.query.all():
-            result_dict.append(u.__dict__)
+def xor(iso, source_id=None):
+    """
+    If there is a value v4 in future given you need to add this here
+    :param iso: given iso
+    :param source_id: specialized by source
+    :return: a complete color dict for specific iso
+    """
+    temp = {'v1': 0, 'v2': 0, 'v3': 0}
+    if source_id is None:
+        for ad in ISO.query.filter_by(iso2=iso):
+            if ad.v1 > temp['v1'] and not None:
+                temp['v1'] = ad.v1
+            if ad.v2 > temp['v2'] and not None:
+                temp['v2'] = ad.v2
+            if ad.v3 > temp['v3'] and not None:
+                temp['v3'] = ad.v3
     else:
-        for u in ISO.query.filter_by(src=source_id).all():
-            result_dict.append(u.__dict__)
-    return result_dict
+        for ad in ISO.query.filter_by(iso2=iso, src=source_id):
+            if ad.v1 > temp['v1'] and not None:
+                temp['v1'] = ad.v1
+            if ad.v2 > temp['v2'] and not None:
+                temp['v2'] = ad.v2
+            if ad.v3 > temp['v3'] and not None:
+                temp['v3'] = ad.v3
+
+    return temp
+
+
+def create_desc(iso):
+    # TODO rename attributes!
+    attribute_list = ['hakuna', 'matata', 'province', 'src']
+    desc_dict = {}
+    for attribute in attribute_list:
+        desc_dict[attribute] = get_attributes(attribute, iso)
+    return desc_dict

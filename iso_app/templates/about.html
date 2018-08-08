@@ -1,11 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>About</h1>
+    <h2 class="card-title">About</h2>
+    <h4 class="card-subtitle mb-2 text-muted">Working with Jinja2</h4>
+    <a href="http://jinja.pocoo.org">Jinja2 Homepage</a><br>
+    <a href="http://jinja.pocoo.org/docs/2.10/templates/">Jinja2 Templating and Funktions</a><br>
+    <br>
+    <h4 class="card-subtitle mb-2 text-muted">Working with Flask and Flask-SQLAlchemy</h4>
+    <a href="http://flask.pocoo.org/docs/1.0/">Flask Homepage</a><br>
+    <a href="http://flask-sqlalchemy.pocoo.org/2.3/">Flask-SQLAlchmey Homepage</a><br>
+    <br>
     <!-- url_for muss auf die definierte route von flask zeigen nicht auf die html! -->
-    Back to <a href="{{ url_for('home') }}">Home</a>
-    <br>
-    <br>
-    {% for i in ing %}
-        <p>{{ i }}</p>
-    {% endfor %}
+    <a class="btn btn-primary" role="button" href="{{ url_for('home') }}">Back to Home</a>
 {% endblock content %}

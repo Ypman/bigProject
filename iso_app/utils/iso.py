@@ -14,6 +14,3 @@ class ISO(db.Model):
     iso2 = db.Column(db.String(2))
     province = db.Column(db.String(100))
     timestamp = db.column(db.Integer)
-
-    def __repr__(self):
-        return 'v1={}, v2={}, v3={}'.format(self.v1, self.v2, self.v3)

@@ -98,8 +98,29 @@ def xor(iso, source_id=None):
 
 def create_desc(iso):
     # TODO rename attributes!
-    attribute_list = ['hakuna', 'matata', 'province', 'src']
+    attribute_list = ['hakuna', 'matata', 'province', 'src', 'v1', 'v2', 'v3']
     desc_dict = {}
     for attribute in attribute_list:
         desc_dict[attribute] = get_attributes(attribute, iso)
-    return desc_dict
+
+    new_string = ""
+    for key, value in desc_dict.items():
+        # new_string.join(key + ": " + str(value))
+        # print(key, value)
+        new_string = new_string + key + ": " + str(value) + "\n"
+    return new_string
+
+# src_list = desc_dict['src']
+# value_list = []
+# for i in src_list:
+#      if 999 not in i:
+#          value_list.append(xor(iso, i))
+#      else:
+#          append(xor(iso))     kann man auch weglassen
+
+# new_string = 'hakuna: ' + str(desc_dict['hakuna']) + '\n' +
+#                       'matata: ' + str(desc_dict['matata']) + '\n' +
+#                       'province: ' + str(desc_dict['province']) + '\n'
+
+
+print(get_iso(92))

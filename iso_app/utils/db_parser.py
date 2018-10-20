@@ -1,6 +1,7 @@
 # db_parser.py
 
 from iso_app.utils.iso import ISO
+from flask import render_template
 
 
 def get_all(source_id):
@@ -11,7 +12,7 @@ def get_all(source_id):
             if i.iso2 not in iso_counter:
                 result_list.append({'id': i.iso2,
                                     'color': color_picker(get_xored_color(i.iso2)),
-                                    'description': str(create_desc(i.iso2))
+                                    'description': create_desc(i.iso2)
                                     })
                 iso_counter.append(i.iso2)
     else:
@@ -19,7 +20,7 @@ def get_all(source_id):
             if i.iso2 not in iso_counter:
                 result_list.append({'id': i.iso2,
                                     'color': color_picker(get_xored_color(i.iso2, source_id)),
-                                    'description': str(create_desc(i.iso2))
+                                    'description': create_desc(i.iso2)
                                     })
                 iso_counter.append(i.iso2)
 
@@ -28,7 +29,7 @@ def get_all(source_id):
                 # print(entry.iso2, 'blubb')
                 result_list.append({'id': entry.iso2,
                                     'color': '#555555',
-                                    'description': str(create_desc(entry.iso2))
+                                    'description': create_desc(entry.iso2)
                                     })
                 iso_counter.append(entry.iso2)
 
@@ -45,16 +46,17 @@ def get_iso(source_id, all=True):
 def get_attributes(attribute, iso=None):
     attribute_list = []
     if iso is None:
-        for l in ISO.query.all():
-            temp_dict = l.__dict__
-            if temp_dict[attribute] not in attribute_list:
-                attribute_list.append(temp_dict[attribute])
+        iterating_through_attributes(attribute, attribute_list, ISO.query.all())
     else:
-        for l in ISO.query.filter_by(iso2=iso).all():
-            temp_dict = l.__dict__
-            if temp_dict[attribute] not in attribute_list:
-                attribute_list.append(temp_dict[attribute])
+        iterating_through_attributes(attribute, attribute_list, ISO.query.filter_by(iso2=iso).all())
     return attribute_list
+
+
+def iterating_through_attributes(attribute, attribute_list, iso_query):
+    for l in iso_query:
+        temp_dict = l.__dict__
+        if temp_dict[attribute] not in attribute_list:
+            attribute_list.append(temp_dict[attribute])
 
 
 def color_picker(value_dict):
@@ -94,18 +96,21 @@ def xor(db_result):
 
 
 def create_desc(iso):
-    # TODO rename attributes!
-    attribute_list = ['hakuna', 'matata', 'province', 'src', 'v1', 'v2', 'v3']
-    desc_dict = {}
-    for attribute in attribute_list:
-        desc_dict[attribute] = get_attributes(attribute, iso)
+    return render_template("desc.html")
 
-    new_string = ""
-    for key, value in desc_dict.items():
-        # new_string.join(key + ": " + str(value))
-        # print(key, value)
-        new_string = new_string + key + ": " + str(value) + "\n"
-    return new_string
+# def create_desc(iso):
+#     # TODO rename attributes!
+#     attribute_list = ['hakuna', 'matata', 'province', 'src', 'v1', 'v2', 'v3']
+#     desc_dict = {}
+#     for attribute in attribute_list:
+#         desc_dict[attribute] = get_attributes(attribute, iso)
+#
+#     new_string = ""
+#     for key, value in desc_dict.items():
+#         # new_string.join(key + ": " + str(value))
+#         # print(key, value)
+#         new_string = new_string + key + ": " + str(value) + "\n"
+#     return new_string
 
 
 # src_list = desc_dict['src']

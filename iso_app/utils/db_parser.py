@@ -1,7 +1,8 @@
 # db_parser.py
 
-from iso_app.utils.iso import ISO
 from flask import render_template
+
+from iso_app.utils.iso import ISO
 
 
 def get_all(source_id):
@@ -11,7 +12,7 @@ def get_all(source_id):
         for i in get_iso(source_id):
             if i.iso2 not in iso_counter:
                 result_list.append({'id': i.iso2,
-                                    'color': color_picker(get_xored_color(i.iso2)),
+                                    'color': color_picker(get_ored_color(i.iso2)),
                                     'description': create_desc(i.iso2)
                                     })
                 iso_counter.append(i.iso2)
@@ -19,14 +20,13 @@ def get_all(source_id):
         for i in get_iso(source_id, False):
             if i.iso2 not in iso_counter:
                 result_list.append({'id': i.iso2,
-                                    'color': color_picker(get_xored_color(i.iso2, source_id)),
+                                    'color': color_picker(get_ored_color(i.iso2, source_id)),
                                     'description': create_desc(i.iso2)
                                     })
                 iso_counter.append(i.iso2)
 
         for entry in get_iso(999):
             if entry.iso2 not in iso_counter:
-                # print(entry.iso2, 'blubb')
                 result_list.append({'id': entry.iso2,
                                     'color': '#555555',
                                     'description': create_desc(entry.iso2)
@@ -70,20 +70,23 @@ def color_picker(value_dict):
                             color_helper_dict['v3'][value_dict['v3']])
 
 
-def get_xored_color(iso, source_id=None):
+def get_ored_color(iso, source_id=None, matata=None):
     """
     If there is a value v4 in future given you need to add this here
+    :param matata: specialized by matata
     :param iso: given iso
     :param source_id: specialized by source
     :return: a complete color dict for specific iso
     """
-    if source_id is None:
-        return xor(ISO.query.filter_by(iso2=iso))
-    else:
-        return xor(ISO.query.filter_by(iso2=iso, src=source_id))
+    if source_id is None and matata is None:
+        return or_func(ISO.query.filter_by(iso2=iso))
+    elif matata is None:
+        return or_func(ISO.query.filter_by(iso2=iso, src=source_id))
+    elif source_id is None:
+        return or_func(ISO.query.filter_by(iso2=iso, matata=matata))
 
 
-def xor(db_result):
+def or_func(db_result):
     temp = {'v1': 0, 'v2': 0, 'v3': 0}
     for ad in db_result:
         if ad.v1 > temp['v1'] and not None:
@@ -96,34 +99,13 @@ def xor(db_result):
 
 
 def create_desc(iso):
-    return render_template("desc.html")
+    src_query = ISO.query.filter_by(iso2=iso)
+    desc_dict = {}
 
-# def create_desc(iso):
-#     # TODO rename attributes!
-#     attribute_list = ['hakuna', 'matata', 'province', 'src', 'v1', 'v2', 'v3']
-#     desc_dict = {}
-#     for attribute in attribute_list:
-#         desc_dict[attribute] = get_attributes(attribute, iso)
-#
-#     new_string = ""
-#     for key, value in desc_dict.items():
-#         # new_string.join(key + ": " + str(value))
-#         # print(key, value)
-#         new_string = new_string + key + ": " + str(value) + "\n"
-#     return new_string
+    for sources in src_query:
+        temp_src_query = ISO.query.filter_by(iso2=iso, src=sources.src)
+        for kp in temp_src_query:
+            print(kp.hakuna, kp.matata, kp.v1, kp.v2, kp.v3)
+            desc_dict[kp.hakuna] = {kp.matata: [kp.v1, kp.v2, kp.v3]}
 
-
-# src_list = desc_dict['src']
-# value_list = []
-# for i in src_list:
-#      if 999 not in i:
-#          value_list.append(xor(iso, i))
-#      else:
-#          append(xor(iso))     kann man auch weglassen
-
-# new_string = 'hakuna: ' + str(desc_dict['hakuna']) + '\n' +
-#                       'matata: ' + str(desc_dict['matata']) + '\n' +
-#                       'province: ' + str(desc_dict['province']) + '\n'
-
-
-print(get_iso(92))
+    return render_template("desc.html", desc_dict=desc_dict)

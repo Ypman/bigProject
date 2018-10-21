@@ -1,3 +1,5 @@
 {% block content %}
-<p>Dies ist ein Test</p>
+{% for key, val in desc_dict.items() %}
+<p>{{ key }}, {{ val }}</p>
+    {% endfor %}
 {% endblock content %}

@@ -100,12 +100,16 @@ def or_func(db_result):
 
 def create_desc(iso):
     src_query = ISO.query.filter_by(iso2=iso)
-    desc_dict = {}
+    desc_dict = None
 
     for sources in src_query:
         temp_src_query = ISO.query.filter_by(iso2=iso, src=sources.src)
         for kp in temp_src_query:
-            print(kp.hakuna, kp.matata, kp.v1, kp.v2, kp.v3)
-            desc_dict[kp.hakuna] = {kp.matata: [kp.v1, kp.v2, kp.v3]}
+            if not desc_dict:
+                desc_dict = {kp.hakuna: {kp.matata: [kp.v1, kp.v2, kp.v3, kp.src]}}
+            elif kp.hakuna in desc_dict and kp.matata not in desc_dict[kp.hakuna]:
+                desc_dict[kp.hakuna][kp.matata] = [kp.v1, kp.v2, kp.v3, kp.src]
+            elif kp.hakuna not in desc_dict:
+                desc_dict[kp.hakuna] = {kp.matata: [kp.v1, kp.v2, kp.v3, kp.src]}
 
     return render_template("desc.html", desc_dict=desc_dict)

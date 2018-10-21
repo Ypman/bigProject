@@ -1,6 +1,6 @@
 .responsive_map {
-    min-height: 800px;
-    height: 20vw;
-    min-width: 1200px;
-    width: 50vw;
+    min-height: 300px;
+    height: 70vh;
+    min-width: 600px;
+    width: 80vw;
 }

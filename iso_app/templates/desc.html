@@ -1,5 +1,22 @@
 {% block content %}
-{% for key, val in desc_dict.items() %}
-<p>{{ key }}, {{ val }}</p>
-    {% endfor %}
+<table>
+  <tr>
+    <td><b>{{ "src" }}</b></td>
+    <td><b>{{ "Hakuna" }}</b></td>
+    <td><b>{{ "Matata" }}</b></td>
+    <td><b>{{ "Farbe" }}</b></td>
+  </tr>
+  {% for src, Hakuna in desc_dict.items() %}
+    <tr>
+      <td>{{ src }}</td>
+      {% for Hakuna, Matata in Hakuna.items() %}
+        <td>{{ Hakuna }}</td>
+        {% for Matata, Farbe in Matata.items() %}
+        <td>{{ Matata }}</td>
+        <td>{{ Farbe }}</td>
+        {% endfor %}
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
 {% endblock content %}

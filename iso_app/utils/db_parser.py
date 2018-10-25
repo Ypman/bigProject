@@ -106,10 +106,11 @@ def create_desc(iso):
         temp_src_query = ISO.query.filter_by(iso2=iso, src=sources.src)
         for kp in temp_src_query:
             if not desc_dict:
-                desc_dict = {kp.hakuna: {kp.matata: [kp.v1, kp.v2, kp.v3, kp.src]}}
+                desc_dict = {kp.hakuna: {kp.matata: [color_picker(get_ored_color(iso, kp.src))]}}
             elif kp.hakuna in desc_dict and kp.matata not in desc_dict[kp.hakuna]:
-                desc_dict[kp.hakuna][kp.matata] = [kp.v1, kp.v2, kp.v3, kp.src]
+                desc_dict[kp.hakuna][kp.matata] = [color_picker(get_ored_color(iso, kp.src))]
             elif kp.hakuna not in desc_dict:
-                desc_dict[kp.hakuna] = {kp.matata: [kp.v1, kp.v2, kp.v3, kp.src]}
+                desc_dict[kp.hakuna] = {kp.matata: [color_picker(get_ored_color(iso, kp.src))]}
+
 
     return render_template("desc.html", desc_dict=desc_dict)
